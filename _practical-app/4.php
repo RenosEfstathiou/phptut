@@ -1,36 +1,51 @@
 <?php include "functions.php"; ?>
-<?php include "includes/header.php";?>
+<?php include "includes/header.php"; ?>
 
-	<section class="content">
+<section class="content">
 
 	<aside class="col-xs-4">
 
-		<?php Navigation();?>
-			
-		
-	</aside><!--SIDEBAR-->
+		<?php Navigation(); ?>
 
 
-<article class="main-content col-xs-8">
+	</aside>
+	<!--SIDEBAR-->
 
-	
-	<?php  
 
-/*  Step1: Define a function and make it return a calculation of 2 numbers
+	<article class="main-content col-xs-8">
+
+
+		<?php
+
+		/*  Step1: Define a function and make it return a calculation of 2 numbers
 
 	Step 2: Make a function that passes parameters and call it using parameter values
 
 
  */
 
-	
-?>
+		function calc()
+		{
+			return 32 + 5;
+		}
+
+		function mult($n1, $n2)
+		{
+			return $n1 * $n2;
+		}
+
+		echo calc() . '<br>';
+		echo mult(32, 2) . '<br>';
+
+
+		?>
 
 
 
 
 
-</article><!--MAIN CONTENT-->
+	</article>
+	<!--MAIN CONTENT-->
 
 
-<?php include "includes/footer.php"; ?>
+	<?php include "includes/footer.php"; ?>
