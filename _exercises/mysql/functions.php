@@ -4,18 +4,27 @@ include 'db.php';
 function createData()
 {
     global $connection;
+    // get submited values from post method
     $username = $_POST['username'];
     $password = $_POST['password'];
+    // trim string so that we dont save empty fields in db
 
     if (trim($username) &&  trim($password)) {
         echo  $username . ' ' . $password;
+        // we clean string from sqli ;
+        $username = mysqli_real_escape_string($connection, $username);
+        $password = mysqli_real_escape_string($connection, $password);
+        $hashFormat = "$2y$10$";
+        $salt = "IssaKnife21savageMetro";
+        $hashFnSalt = $hashFormat . $salt;
+        $encript_password = crypt($password, $hashFnSalt);
 
-
+        // create the query
         $query = "INSERT INTO users(username,password) ";
-        $query .= "VALUES ('$username','$password')";
-
+        $query .= "VALUES ('$username','$encript_password ')";
+        // submit query
         $res = mysqli_query($connection, $query);
-
+        // check if the query worked
         if (!$res) {
             die('Query failed' . mysqli_error($connection));
         }
