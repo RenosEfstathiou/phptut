@@ -25,23 +25,14 @@ include "includes/navigation.php";
             </h1>
 
             <?php
-            if (isset($_POST['submit']))
-                $search = $_POST['search'];
-            $search =   mysqli_real_escape_string($connection, $search);
 
-            $query = "SELECT * FROM posts ";
-            $query .= "WHERE  post_tags LIKE '%$search%' ";
+            if (isset($_GET['category'])) {
 
-            $res = mysqli_query($connection, $query);
+                $category = $_GET['category'];
 
-            if (!$res) {
-                die("QUERY FAILED : <br>" . mysqli_error($connection));
-            }
+                $query  = "SELECT *  FROM posts WHERE post_category_id = $category ";
+                $res = mysqli_query($connection, $query);
 
-            $count = mysqli_num_rows($res);
-            if ($count == 0) {
-                echo "<h1> No Result </h1>";
-            } else {
                 while ($row = mysqli_fetch_assoc($res)) {
                     $post_id = $row['post_id'];
                     $post_title = $row['post_title'];
@@ -55,10 +46,10 @@ include "includes/navigation.php";
             ?>
                         <!-- First Blog Post -->
                         <h2>
-                            <a href="#"><?php echo $post_title ?></a>
+                            <a href="post.php?p_id=<?php echo $post_id;  ?>"><?php echo $post_title ?></a>
                         </h2>
                         <p class="lead">
-                            by <a href="index.php"><?php echo $post_author ?></a>
+                            by <a href="index.php"><?php echo $post_author; ?></a>
                         </p>
                         <p><span class="glyphicon glyphicon-time"></span> Posted on <?php echo $post_date ?></p>
                         <hr>
@@ -72,7 +63,12 @@ include "includes/navigation.php";
                     }
                 }
             }
+
             ?>
+
+
+
+
 
         </div>
 

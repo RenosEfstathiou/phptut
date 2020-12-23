@@ -28,8 +28,9 @@
                     $cat_res = mysqli_query($connection, $query);
                     while ($row = mysqli_fetch_assoc($cat_res)) {
                         $category = $row['cat_title'];
+                        $cat_id = $row['cat_id'];
                     ?>
-                        <li><a href="#"><?php echo strtoupper($category)  ?></a>
+                        <li><a href="category.php?category=<?php echo $cat_id; ?>"><?php echo strtoupper($category)  ?></a>
                         <?php
                     }
                         ?>
