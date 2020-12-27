@@ -9,7 +9,7 @@ function confirm($res)
 }
 
 
-function submitPost()
+function submitComment()
 {
     global $connection;
     $post_id =  $_GET['p_id'];
@@ -51,7 +51,8 @@ function  showComments()
             $com_author  = $row['com_author'];
             $com_date  = $row['com_date'];
             $com_email  = $row['com_email'];
-            $com_content  = $row['com_content']; ?>
+            $com_content  = $row['com_content'];
+?>
 
             <!-- Comment -->
             <div class="media">
@@ -65,6 +66,7 @@ function  showComments()
             </div>
 
 <?php
+
         }
     }
 }

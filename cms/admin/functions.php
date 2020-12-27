@@ -1,5 +1,5 @@
 <?php
-
+// checks if there was an error exequting the query;
 function confirm($res)
 {
     global $connection;
@@ -8,7 +8,12 @@ function confirm($res)
     }
 }
 
-
+/*
+ 
+ * *** Categorie functions *** *
+ 
+  */
+// inserts  a new category
 function insertCategories()
 {
     global $connection;
@@ -28,7 +33,7 @@ function insertCategories()
     }
 }
 
-
+//prints all categories in the categories page
 function findAllCategories()
 {
     global $connection;
@@ -50,7 +55,7 @@ function findAllCategories()
     }
 }
 
-
+// removes a category from the database
 function deleteCategory()
 {
     global $connection;
@@ -79,6 +84,45 @@ function deleteCategory()
     }
 }
 
+/*
+
+* *** Post functions *** *
+
+*/
+// Create a new post
+function addPost()
+{
+    global $connection;
+    $post_title = $_POST['post_title'];
+    $post_author = $_POST['post_author'];
+    $post_category_id = $_POST['post_category_id'];
+    $post_status = $_POST['post_status'];
+
+    $post_image = $_FILES['post_image']['name'];
+    $post_image_temp = $_FILES['post_image']['tmp_name'];
+
+
+    $post_tags = $_POST['post_tags'];
+    $post_content = $_POST['post_content'];
+    $post_date = date('d-m-y');
+
+
+
+    move_uploaded_file($post_image_temp, "../images/$post_image");
+
+    $query = "INSERT INTO posts(post_category_id, post_title, post_author, post_date, post_image, post_content,post_tags,post_status ) ";
+    $query .= "VALUES('{$post_category_id}','{$post_title}','{$post_author}',now(),'{$post_image}','{$post_content}','{$post_tags}','{$post_status}') ";
+
+    $res = mysqli_query($connection, $query);
+
+    confirm($res);
+}
+
+/*
+
+* *** Comment functions *** *
+
+*/
 
 function showAllComments()
 {
@@ -155,4 +199,139 @@ function approveComment($approve_id)
         confirm($res);
         header("Location: comments.php");
     }
+}
+
+/*
+
+    * *** User functions *** *
+*/
+
+function addUser()
+{
+    global $connection;
+    $user_username = $_POST['user_username'];
+    $user_firstname = $_POST['user_firstname'];
+    $user_lastname = $_POST['user_lastname'];
+    $role = $_POST['role'];
+    $user_email = $_POST['user_email'];
+    $user_password = $_POST['user_password'];
+
+    $user_username = mysqli_real_escape_string($connection, $user_username);
+    $user_firstname = mysqli_real_escape_string($connection, $user_firstname);
+    $user_lastname = mysqli_real_escape_string($connection, $user_lastname);
+    $user_email = mysqli_real_escape_string($connection, $user_email);
+    $user_password = mysqli_real_escape_string($connection, $user_password);
+
+    $query = "INSERT INTO  users(user_username,user_firstname,user_lastname,role,user_email,user_password,user_image,randSalt) ";
+    $query .= " VALUES ('{$user_username}','{$user_firstname}', '{$user_lastname}','{$role}','{$user_email}','{$user_password}' , '','' )";
+
+    $res = mysqli_query($connection, $query);
+
+    confirm($res);
+
+    echo "User Created: " . " " . "<a href='users.php'>View Users </a> ";
+}
+
+function deleteUser()
+{
+    global $connection;
+    $delete_id = $_GET['delete'];
+    if (is_numeric($delete_id)) {
+        $query = "DELETE FROM  users ";
+        $query .= "WHERE user_id={$delete_id}";
+
+        $res = mysqli_query($connection, $query);
+        confirm($res);
+        header("Location:users.php");
+    }
+}
+
+function changeToAdmin()
+{
+    $user_id = $_GET['change_to_admin'];
+    if (is_numeric($user_id)) {
+        global $connection;
+        $query = "UPDATE users  SET  role = 'admin' WHERE user_id = $user_id ";
+
+        $res = mysqli_query($connection, $query);
+        confirm($res);
+        header("Location: users.php");
+    }
+}
+
+function changeToSub()
+{
+    $user_id = $_GET['change_to_sub'];
+    if (is_numeric($user_id)) {
+        global $connection;
+        $query = "UPDATE users  SET  role = 'subscriber' WHERE user_id = $user_id ";
+
+        $res = mysqli_query($connection, $query);
+        confirm($res);
+        header("Location: users.php");
+    }
+}
+
+function editUser()
+{
+    global $connection;
+    $user_id = $_GET['edit_user'];
+    $user_username = $_POST['user_username'];
+    $user_firstname = $_POST['user_firstname'];
+    $user_lastname = $_POST['user_lastname'];
+    $user_email = $_POST['user_email'];
+    $user_password = $_POST['user_password'];
+    $role = $_POST['role'];
+
+    $user_username = mysqli_real_escape_string($connection, $user_username);
+    $user_firstname = mysqli_real_escape_string($connection, $user_firstname);
+    $user_lastname = mysqli_real_escape_string($connection, $user_lastname);
+    $user_email = mysqli_real_escape_string($connection, $user_email);
+    $user_password = mysqli_real_escape_string($connection, $user_password);
+
+    $query = "UPDATE users SET  ";
+    $query .= "user_username = '{$user_username}', ";
+    $query .= "user_firstname = '{$user_firstname}', ";
+    $query .= "user_lastname = '{$user_lastname}', ";
+    $query .= "user_email = '{$user_email}', ";
+    $query .= "user_password = '{$user_password}', ";
+    $query .= "role = '{$role}' ";
+    $query .= "WHERE user_id =$user_id ";
+
+    $res = mysqli_query($connection, $query);
+
+    confirm($res);
+    header("Location: users.php?source=edit_user&edit_user={$user_id}");
+}
+
+function updateProfile($user_id)
+{
+    global $connection;
+    $user_id = $user_id;
+    $user_username = $_POST['user_username'];
+    $user_firstname = $_POST['user_firstname'];
+    $user_lastname = $_POST['user_lastname'];
+    $user_email = $_POST['user_email'];
+    $user_password = $_POST['user_password'];
+    $role = $_POST['role'];
+
+    $user_username = mysqli_real_escape_string($connection, $user_username);
+    $user_firstname = mysqli_real_escape_string($connection, $user_firstname);
+    $user_lastname = mysqli_real_escape_string($connection, $user_lastname);
+    $user_email = mysqli_real_escape_string($connection, $user_email);
+    $user_password = mysqli_real_escape_string($connection, $user_password);
+
+    $query = "UPDATE users SET  ";
+    $query .= "user_username = '{$user_username}', ";
+    $query .= "user_firstname = '{$user_firstname}', ";
+    $query .= "user_lastname = '{$user_lastname}', ";
+    $query .= "user_email = '{$user_email}', ";
+    $query .= "user_password = '{$user_password}', ";
+    $query .= "role = '{$role}' ";
+    $query .= "WHERE user_id =$user_id ";
+
+    $res = mysqli_query($connection, $query);
+
+    confirm($res);
+    header("Location: profile.php");
 }
